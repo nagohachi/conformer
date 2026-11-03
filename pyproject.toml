@@ -1,0 +1,31 @@
+[project]
+name = "conformer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "nagohachi", email = "nagohachi.study@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "jax>=0.8.0",
+    "jax-ai-stack>=2025.10.28",
+]
+
+[project.optional-dependencies]
+cpu = []
+cuda12 = ["jax[cuda12]>=0.8.0"]
+cuda13 = ["jax[cuda13]>=0.8.0"]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = "cpu" },
+        { extra = "cuda12" },
+        { extra = "cuda13" },
+    ],
+]
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
