@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "beartype>=0.23.1",
     "jax>=0.8.0",
     "jax-ai-stack>=2025.10.28",
 ]
