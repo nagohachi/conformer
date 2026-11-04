@@ -1,12 +1,11 @@
 import jax.numpy as jnp
 from beartype import beartype
-from flax import struct
+from flax.struct import PyTreeNode
 from jaxtyping import Array, Bool, Float, Int, jaxtyped
 
 
 @jaxtyped(typechecker=beartype)
-@struct.dataclass
-class Feature3DWithLength:
+class Feature3DWithLength(PyTreeNode):
     x: Float[Array, "B T D"]
     xlens: Int[Array, " B"]
 
