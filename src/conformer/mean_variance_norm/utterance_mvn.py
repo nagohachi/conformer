@@ -31,6 +31,6 @@ class UtteranceMVN(nnx.Module):
             if self.norm_vars:
                 new_x = feat.x / hid_var
             else:
-                new_x = feat.x / hid_var
+                new_x = feat.x
 
         return feat.replace(x=new_x)
