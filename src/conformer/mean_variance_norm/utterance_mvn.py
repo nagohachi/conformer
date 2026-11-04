@@ -1,3 +1,4 @@
+import jax.numpy as jnp
 from flax import nnx
 
 from conformer.schemas import Feature3DWithLength
@@ -16,20 +17,26 @@ class UtteranceMVN(nnx.Module):
         self.eps = eps
 
     def __call__(self, feat: Feature3DWithLength) -> Feature3DWithLength:
-        valid_mask = feat.valid_mask
-        hid_mean = (feat.x * valid_mask).sum(axis=1) / feat.xlens  # (B, D)
+        valid_mask = feat.valid_mask[:, :, None]  # (B, T, 1)
 
-        mean_of_square = (feat.x**2 * valid_mask).sum(axis=1) / feat.xlens
-        hid_var = mean_of_square - hid_mean**2  # (B, D)
+        # (B, 1, D)
+        hid_mean = (feat.x * valid_mask).sum(axis=1, keepdims=True) / feat.xlens[
+            :, None, None
+        ]
+
+        mean_of_square = (feat.x**2 * valid_mask).sum(
+            axis=1, keepdims=True
+        ) / feat.xlens[:, None, None]
+        hid_var = mean_of_square - hid_mean**2  # (B, 1, D)
 
         if self.norm_means:
             if self.norm_vars:
-                new_x = (feat.x - hid_mean) / hid_var
+                new_x = (feat.x - hid_mean) / jnp.sqrt(hid_var)
             else:
                 new_x = feat.x - hid_mean
         else:
             if self.norm_vars:
-                new_x = feat.x / hid_var
+                new_x = feat.x / jnp.sqrt(hid_var)
             else:
                 new_x = feat.x
 
